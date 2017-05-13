@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/elsix/authz/issues"
   },
-  "homepage": "https://github.com/elsix/authz#readme"
+  "homepage": "https://github.com/elsix/authz#readme",
+  "dependencies": {
+    "harmony-reflect": "^1.5.1"
+  }
 }
