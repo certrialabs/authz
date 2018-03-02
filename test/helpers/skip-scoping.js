@@ -1,4 +1,4 @@
-'use stict'
+'use strict'
 
 var assert = require('assert');
 var resHelpers = require('../lib/res');

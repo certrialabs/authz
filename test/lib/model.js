@@ -13,5 +13,14 @@ module.exports = {
   },
   getConstObject: () => {
     return o;
+  },
+  getNumberedArrayObject: (size) => {
+    let a = [];
+
+    for (let i = 1; i < size; i++) {
+      a.push(i);
+    }
+
+    return a;
   }
 }
