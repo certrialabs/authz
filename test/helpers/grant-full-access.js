@@ -5,29 +5,24 @@ var resHelpers = require('../lib/res');
 var authz = require('../../index');
 
 describe('Grant Full Access', function() {
-  var res;
-  beforeEach(function() {
-    res = resHelpers.getEmptyResObject();
-  })
-
   it('should succeed', function() {
-    return authz.helpers.grantFullAccess(res)
+    return authz.helpers.grantFullAccess(resHelpers.getCurrentRes())
     .then((success) => {
       return assert(success);
     });
   });
 
   it('should set fullaccess to true', function() {
-    return authz.helpers.grantFullAccess(res)
+    return authz.helpers.grantFullAccess(resHelpers.getCurrentRes())
     .then(() => {
-      return assert(res['authz']['fullaccess']);
+      return assert(resHelpers.getCurrentRes()['authz']['fullaccess']);
     });
   });
 
   it('should set fullscope to true', function() {
-    return authz.helpers.grantFullAccess(res)
+    return authz.helpers.grantFullAccess(resHelpers.getCurrentRes())
     .then(() => {
-      return assert(res['authz']['fullscope']);
+      return assert(resHelpers.getCurrentRes()['authz']['fullscope']);
     });
   });
 });

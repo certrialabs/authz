@@ -1,7 +1,15 @@
 'use strict';
 
+let currentRes;
+let getEmptyResObject = () => {
+  return {};
+};
+
 module.exports = {
-  getEmptyResObject: () => {
-    return {};
-  } 
+  prepareCurrentRes: () => {
+    currentRes = getEmptyResObject();
+  },
+  getCurrentRes: () => {
+    return currentRes;
+  }
 }
