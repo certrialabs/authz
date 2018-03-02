@@ -11,4 +11,5 @@ describe("Helpers", function() {
   require('./helpers/skip-scoping');
   require('./helpers/skip-authorization');
   require('./helpers/scope');
+  require('./helpers/authorized');
 });
