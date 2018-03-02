@@ -13,3 +13,11 @@ describe("Helpers", function() {
   require('./helpers/scope');
   require('./helpers/authorized');
 });
+
+describe("Middlewares", function() {
+  beforeEach(function() {
+    resHelpers.prepareCurrentRes();
+  });
+
+  require('./middlewares/grant-full-access');
+});
