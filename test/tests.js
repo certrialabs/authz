@@ -22,7 +22,7 @@ describe("Middlewares", function() {
   require('./middlewares/grant-full-access');
   require('./middlewares/verify-scoped');
   require('./middlewares/verify-authorized');
+  require('./middlewares/verify-all');
   require('./middlewares/skip-scoping');
   require('./middlewares/skip-authorization');
-
 });
