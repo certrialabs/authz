@@ -20,4 +20,5 @@ describe("Middlewares", function() {
   });
 
   require('./middlewares/grant-full-access');
+  require('./middlewares/verify-scoped');
 });

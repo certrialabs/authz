@@ -2,7 +2,9 @@
 
 let currentRes;
 let getEmptyResObject = () => {
-  return {};
+  return new class {
+    foo() {}
+  };
 };
 
 module.exports = {

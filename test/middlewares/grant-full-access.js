@@ -2,29 +2,41 @@
 
 let assert = require('assert');
 let resHelpers = require('../lib/res');
-let nextHelpers = require('../lib/next');
+let middlewareHelpers = require('../lib/middleware');
 let authz = require('../../index');
 
 describe('Grant Full Access', function() {
-  it('should call next without argument', function(done) {
-    authz.middlewares.grantFullAccess()(null, resHelpers.getCurrentRes(), nextHelpers.assertCalled(done));
+  it('should call next without argument', function() {
+    let middleware = middlewareHelpers.getMiddleware();
+    authz.middlewares.grantFullAccess()(null, resHelpers.getCurrentRes(), middleware.getCb());
+
+    return middleware.getPromise().then((data) => assert(!data));
   });
 
-  it('should never fails', function(done) {
-    authz.middlewares.grantFullAccess()(null, resHelpers.getCurrentRes(), nextHelpers.assertNoError(done));
+  it('should never fails', function() {
+    let middleware = middlewareHelpers.getMiddleware();
+    authz.middlewares.grantFullAccess()(null, resHelpers.getCurrentRes(), middleware.getCb());
+
+    return middleware.getPromise().then((data) => assert(!data)).catch(() => assert(false));
   });
 
-  it('should set fullscope to true', function(done) {
+  it('should set fullscope to true', function() {
+    let middleware = middlewareHelpers.getMiddleware();
     authz.middlewares.grantFullAccess()(null,
       resHelpers.getCurrentRes(),
-      nextHelpers.assertNoError(done, () => assert(resHelpers.getCurrentRes()['authz']['fullscope']))
+      middleware.getCb()
     );
+
+    return middleware.getPromise().then(() => assert(resHelpers.getCurrentRes()['authz']['fullscope']));
   });
 
-  it('should set fullaccess to true', function(done) {
+  it('should set fullaccess to true', function() {
+    let middleware = middlewareHelpers.getMiddleware();
     authz.middlewares.grantFullAccess()(null,
       resHelpers.getCurrentRes(),
-      nextHelpers.assertNoError(done, () => assert(resHelpers.getCurrentRes()['authz']['fullaccess']))
+      middleware.getCb()
     );
+
+    return middleware.getPromise().then(() => assert(resHelpers.getCurrentRes()['authz']['fullaccess']));
   });
 });

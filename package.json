@@ -4,7 +4,7 @@
   "description": "A simple authorization framework for nodejs inspired by ruby pundit gem.",
   "main": "index.js",
   "scripts": {
-    "test": "nyc mocha"
+    "test": "nyc mocha --harmony_proxies"
   },
   "repository": {
     "type": "git",
