@@ -8,24 +8,10 @@ let modelHelpers = require('../lib/model');
 let policyHelpers = require('../lib/policy');
 let authz = require('../../index');
 
-describe('Verify Scoped', function() {
-  it('should set scoped to false', function() {
-    let middleware = middlewareHelpers.getMiddleware();
-    authz.middlewares.verifyScoped()(
-      null,
-      resHelpers.getCurrentRes(),
-      middleware.getCb()
-    );
-
-    return middleware.getPromise()
-    .then(() => {
-      return assert(!resHelpers.getCurrentRes()['authz']['scoped'])
-    });
-  });
-
+describe('Verify Authorized', function() {
   it('should set authorized to false', function() {
     let middleware = middlewareHelpers.getMiddleware();
-    authz.middlewares.verifyScoped()(
+    authz.middlewares.verifyAuthorized()(
       null,
       resHelpers.getCurrentRes(),
       middleware.getCb()
@@ -33,13 +19,13 @@ describe('Verify Scoped', function() {
 
     return middleware.getPromise()
     .then(() => {
-      return assert(!resHelpers.getCurrentRes()['authz']['authorized']);
+      return assert(!resHelpers.getCurrentRes()['authz']['authorized'])
     });
   });
 
-  it('should set scopeVerificationRequired to true', function() {
+  it('should set scoped to false', function() {
     let middleware = middlewareHelpers.getMiddleware();
-    authz.middlewares.verifyScoped()(
+    authz.middlewares.verifyAuthorized()(
       null,
       resHelpers.getCurrentRes(),
       middleware.getCb()
@@ -47,13 +33,27 @@ describe('Verify Scoped', function() {
 
     return middleware.getPromise()
     .then(() => {
-      return assert(resHelpers.getCurrentRes()['authz']['scopeVerificationRequired']);
+      return assert(!resHelpers.getCurrentRes()['authz']['scoped']);
+    });
+  });
+
+  it('should set authzVerificationRequired to true', function() {
+    let middleware = middlewareHelpers.getMiddleware();
+    authz.middlewares.verifyAuthorized()(
+      null,
+      resHelpers.getCurrentRes(),
+      middleware.getCb()
+    );
+
+    return middleware.getPromise()
+    .then(() => {
+      return assert(resHelpers.getCurrentRes()['authz']['authzVerificationRequired']);
     });
   });
 
   it('should set proxied to true', function() {
     let middleware = middlewareHelpers.getMiddleware();
-    authz.middlewares.verifyScoped()(
+    authz.middlewares.verifyAuthorized()(
       null,
       resHelpers.getCurrentRes(),
       middleware.getCb()
@@ -65,9 +65,9 @@ describe('Verify Scoped', function() {
     });
   });
 
-  it('should not allow method call before scoping', function() {
+  it('should not allow method call before authorization', function() {
     let middleware = middlewareHelpers.getMiddleware();
-    authz.middlewares.verifyScoped()(
+    authz.middlewares.verifyAuthorized()(
       null,
       resHelpers.getCurrentRes(),
       middleware.getCb()
@@ -84,9 +84,9 @@ describe('Verify Scoped', function() {
     });
   });
 
-  it('should allow method call after scoping', function() {
+  it('should allow method call after authorization', function() {
     let middleware = middlewareHelpers.getMiddleware();
-    authz.middlewares.verifyScoped()(
+    authz.middlewares.verifyAuthorized()(
       null,
       resHelpers.getCurrentRes(),
       middleware.getCb()
@@ -94,12 +94,12 @@ describe('Verify Scoped', function() {
 
     return middleware.getPromise()
     .then(() => {
-      return authz.helpers.scope(resHelpers.getCurrentRes(), userHelpers.getSimpleUser(), modelHelpers.getConstObject(), policyHelpers.getSimplePolicy())
+      return authz.helpers.authorized(resHelpers.getCurrentRes(), userHelpers.getSimpleUser(), modelHelpers.getConstObject(), 'allowed', policyHelpers.getSimplePolicy())
     })
     .then(() => {
       resHelpers.getCurrentRes().foo();
       assert(true);
     })
-    .catch((err) => assert(false));;
+    .catch((err) => assert(false));
   });
 });
