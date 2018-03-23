@@ -4,7 +4,9 @@
   "description": "A simple authorization framework for nodejs inspired by ruby pundit gem.",
   "main": "index.js",
   "scripts": {
-    "test": "node run-tests.js"
+    "test": "standard index.js && node run-tests.js",
+    "lint": "standard index.js || exit 0",
+    "fix-lint": "standard --fix index.js"
   },
   "repository": {
     "type": "git",
@@ -26,6 +28,7 @@
   },
   "devDependencies": {
     "mocha": "^5.0.1",
-    "nyc": "^11.4.1"
+    "nyc": "^11.4.1",
+    "standard": "^11.0.1"
   }
 }
