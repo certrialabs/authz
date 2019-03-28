@@ -6,7 +6,7 @@ Authz is a simple web authorization library for nodejs. It is written fully in j
 ## Goals
 - simplicity - whole codebase is 142 lines.
 - framework agnostict - The library has some usefull middlewares for express but can be used with any web framework or data storage.
-- basic paterns - Use plain javascript classes and object oriented design patterns to build a simple, robust and scaleable authorization system.
+- basic paterns - Use plain javascript classes and object oriented design patterns to build a simple, robust and scalable authorization system.
 
 ## Instalation
 ## Terminology
