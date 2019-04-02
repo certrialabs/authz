@@ -67,23 +67,33 @@ let grantFullAccess = (res) => {
 
   return new Promise((resolve) => resolve(true))
 }
-
-let initProxy = (res) => {
+let doCheck = (res) => {
+  if (res['authz']['scopeVerificationRequired']) {
+    if (!res['authz']['scoped'] === true && !res['authz']['skipScoping'] === true) {
+      throw new Error('Please call policy scope before modifying the result')
+    }
+  }
+  if (res['authz']['authzVerificationRequired']) {
+    if (!res['authz']['authorized'] && !res['authz']['skipAuthorization'] === true) {
+      throw new Error('Please call policy authorized before modifying the result')
+    }
+  }
+}
+let initProxy = (res, options) => {
   if (!res['authz']['proxied']) {
     res['authz']['proxied'] = true
     Object.setPrototypeOf(res, new Proxy(Object.getPrototypeOf(res), {
       get: (target, key) => {
-        if (res['authz']['scopeVerificationRequired']) {
-          if (!res['authz']['scoped'] === true && !res['authz']['skipScoping'] === true) {
-            throw new Error('Please call policy scope before modifying the result')
-          }
+        if (typeof options === 'undefined' ||
+            options === null ||
+            (!options.hasOwnProperty('included') &&
+              !options.hasOwnProperty('excluded') &&
+              !options.hasOwnProperty('excludeFields'))) {
+          doCheck(res)
+        } else if ((options && options['included'] && options['included'].includes(key)) ||
+                    (options && options['excluded'] && !options['excluded'].includes(key))) {
+          doCheck(res)
         }
-        if (res['authz']['authzVerificationRequired']) {
-          if (!res['authz']['authorized'] && !res['authz']['skipAuthorization'] === true) {
-            throw new Error('Please call policy authorized before modifying the result')
-          }
-        }
-
         return target[key]
       }
     }))
@@ -92,10 +102,10 @@ let initProxy = (res) => {
 
 module.exports = {
   middlewares: {
-    verifyScoped: () => {
+    verifyScoped: (options) => {
       return (req, res, next) => {
         initContext(res)
-        initProxy(res)
+        initProxy(res, options)
 
         res['authz']['scoped'] = false
         res['authz']['skipScoping'] = false
@@ -104,10 +114,10 @@ module.exports = {
         next()
       }
     },
-    verifyAuthorized: () => {
+    verifyAuthorized: (options) => {
       return (req, res, next) => {
         initContext(res)
-        initProxy(res)
+        initProxy(res, options)
 
         res['authz']['authorized'] = false
         res['authz']['skipAuthorization'] = false

@@ -102,4 +102,106 @@ describe('Verify Authorized', function() {
     })
     .catch((err) => assert(false));
   });
+  it('should allow method call excluding authorization', function() {
+    let options = {
+      excluded : []
+    }
+    options.excluded.push('foo');
+    let middleware = middlewareHelpers.getMiddleware();
+    authz.middlewares.verifyAuthorized(options)(
+      null,
+      resHelpers.getCurrentRes(),
+      middleware.getCb()
+    );
+
+    return middleware.getPromise()
+    .then(() => {
+      resHelpers.getCurrentRes().foo();
+      assert(true);
+    })
+    .catch((err) => assert(false));
+  });
+  it('should not allow method call if method not exclude authorization', function() {
+    let options = {
+      excluded : []
+    }
+    options.excluded.push('foo');
+    let middleware = middlewareHelpers.getMiddleware();
+    authz.middlewares.verifyAuthorized(options)(
+      null,
+      resHelpers.getCurrentRes(),
+      middleware.getCb()
+    );
+
+    return middleware.getPromise()
+   /* .then(() => {
+      return authz.helpers.authorized(resHelpers.getCurrentRes(), userHelpers.getSimpleUser(), modelHelpers.getConstObject(), 'allowed', policyHelpers.getSimplePolicy())
+    })*/
+    .then(() => {
+      resHelpers.getCurrentRes().bar();
+      assert(false);
+    })
+    .catch((err) => assert(true));
+  });
+  it('should not allow included method call without authorization', function() {
+    let options = {
+      included : []
+    }
+    options.included.push('foo');
+    let middleware = middlewareHelpers.getMiddleware();
+    authz.middlewares.verifyAuthorized(options)(
+      null,
+      resHelpers.getCurrentRes(),
+      middleware.getCb()
+    );
+
+    return middleware.getPromise()
+    .then(() => {
+      resHelpers.getCurrentRes().foo();
+      assert(false);
+    })
+    .catch((err) => assert(true));
+  });
+  it('should allow only included method call with authorization', function() {
+    let options = {
+      included : []
+    }
+    options.included.push('foo');
+    let middleware = middlewareHelpers.getMiddleware();
+    authz.middlewares.verifyAuthorized(options)(
+      null,
+      resHelpers.getCurrentRes(),
+      middleware.getCb()
+    );
+
+    return middleware.getPromise()
+    .then(() => {
+      return authz.helpers.authorized(resHelpers.getCurrentRes(), userHelpers.getSimpleUser(), modelHelpers.getConstObject(), 'allowed', policyHelpers.getSimplePolicy())
+    })
+    .then(() => {
+      resHelpers.getCurrentRes().foo();
+      assert(false);
+    })
+    .catch((err) => assert(true));
+  });
+
+  it('should allow only included method call without authorization', function() {
+    let options = {
+      included : []
+    }
+    options.included.push('foo');
+    let middleware = middlewareHelpers.getMiddleware();
+    authz.middlewares.verifyAuthorized(options)(
+      null,
+      resHelpers.getCurrentRes(),
+      middleware.getCb()
+    );
+
+    return middleware.getPromise()
+    .then(() => {
+      resHelpers.getCurrentRes().bar();
+      assert(true);
+    })
+    .catch((err) => assert(false));
+  });
 });
