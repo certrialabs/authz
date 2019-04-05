@@ -104,9 +104,8 @@ describe('Verify Scoped', function() {
   });
   it('should be able to include custom function scoping', function() {
     let options = {
-      included : []
+      included : ['bar']
     }
-    options.included.push('bar');
     let middleware = middlewareHelpers.getMiddleware();
     authz.middlewares.verifyScoped(options)(
       null,
@@ -123,9 +122,8 @@ describe('Verify Scoped', function() {
   });
   it('should be able to execute not included functions', function() {
     let options = {
-      included : []
+      included : ['bar']
     }
-    options.included.push('bar');
     let middleware = middlewareHelpers.getMiddleware();
     authz.middlewares.verifyScoped(options)(
       null,
@@ -142,9 +140,8 @@ describe('Verify Scoped', function() {
   });
   it('should be able to exclude custom function scoping', function() {
     let options = {
-      excluded : []
+      excluded : ['bar']
     }
-    options.excluded.push('bar');
     let middleware = middlewareHelpers.getMiddleware();
     authz.middlewares.verifyScoped(options)(
       null,
@@ -161,9 +158,8 @@ describe('Verify Scoped', function() {
   });
   it('should not be able to execute all but excluded functions', function() {
     let options = {
-      excluded : []
+      excluded : ['bar']
     }
-    options.excluded.push('bar');
     let middleware = middlewareHelpers.getMiddleware();
     authz.middlewares.verifyScoped(options)(
       null,

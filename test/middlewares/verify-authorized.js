@@ -104,9 +104,8 @@ describe('Verify Authorized', function() {
   });
   it('should allow method call excluding authorization', function() {
     let options = {
-      excluded : []
+      excluded : ['foo']
     }
-    options.excluded.push('foo');
     let middleware = middlewareHelpers.getMiddleware();
     authz.middlewares.verifyAuthorized(options)(
       null,
@@ -123,9 +122,8 @@ describe('Verify Authorized', function() {
   });
   it('should not allow method call if method not exclude authorization', function() {
     let options = {
-      excluded : []
+      excluded : ['foo']
     }
-    options.excluded.push('foo');
     let middleware = middlewareHelpers.getMiddleware();
     authz.middlewares.verifyAuthorized(options)(
       null,
@@ -134,9 +132,6 @@ describe('Verify Authorized', function() {
     );
 
     return middleware.getPromise()
-   /* .then(() => {
-      return authz.helpers.authorized(resHelpers.getCurrentRes(), userHelpers.getSimpleUser(), modelHelpers.getConstObject(), 'allowed', policyHelpers.getSimplePolicy())
-    })*/
     .then(() => {
       resHelpers.getCurrentRes().bar();
       assert(false);
@@ -145,9 +140,8 @@ describe('Verify Authorized', function() {
   });
   it('should not allow included method call without authorization', function() {
     let options = {
-      included : []
+      included : ['foo']
     }
-    options.included.push('foo');
     let middleware = middlewareHelpers.getMiddleware();
     authz.middlewares.verifyAuthorized(options)(
       null,
@@ -164,9 +158,8 @@ describe('Verify Authorized', function() {
   });
   it('should allow only included method call with authorization', function() {
     let options = {
-      included : []
+      included : ['foo']
     }
-    options.included.push('foo');
     let middleware = middlewareHelpers.getMiddleware();
     authz.middlewares.verifyAuthorized(options)(
       null,
@@ -187,9 +180,8 @@ describe('Verify Authorized', function() {
 
   it('should allow only included method call without authorization', function() {
     let options = {
-      included : []
+      included : ['foo']
     }
-    options.included.push('foo');
     let middleware = middlewareHelpers.getMiddleware();
     authz.middlewares.verifyAuthorized(options)(
       null,
