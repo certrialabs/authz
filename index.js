@@ -134,26 +134,34 @@ module.exports = {
   middlewares: {
     verifyScoped: (options) => {
       return (req, res, next) => {
-        initContext(res)
-        initProxy(res, options, SCOPE_OPTION_TYPE)
+        try {
+          initContext(res)
+          initProxy(res, options, SCOPE_OPTION_TYPE)
 
-        res['authz']['scoped'] = false
-        res['authz']['skipScoping'] = false
-        res['authz']['scopeVerificationRequired'] = true
+          res['authz']['scoped'] = false
+          res['authz']['skipScoping'] = false
+          res['authz']['scopeVerificationRequired'] = true
 
-        next()
+          next()
+        } catch (err) {
+          next(err)
+        }
       }
     },
     verifyAuthorized: (options) => {
       return (req, res, next) => {
-        initContext(res)
-        initProxy(res, options, AUTHORIZE_OPTION_TYPE)
+        try {
+          initContext(res)
+          initProxy(res, options, AUTHORIZE_OPTION_TYPE)
 
-        res['authz']['authorized'] = false
-        res['authz']['skipAuthorization'] = false
-        res['authz']['authzVerificationRequired'] = true
+          res['authz']['authorized'] = false
+          res['authz']['skipAuthorization'] = false
+          res['authz']['authzVerificationRequired'] = true
 
-        next()
+          next()
+        } catch (err) {
+          next(err)
+        }
       }
     },
     skipAuthorization: () => {

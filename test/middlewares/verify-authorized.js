@@ -196,4 +196,23 @@ describe('Verify Authorized', function() {
     })
     .catch((err) => assert(false));
   });
+  it('should not be able to set both included and excluded', function() {
+    let options = {
+      included : ['foo'],
+      excluded : ['foo']
+    }
+    let middleware = middlewareHelpers.getMiddleware();
+    authz.middlewares.verifyAuthorized(options)(
+      null,
+      resHelpers.getCurrentRes(),
+      middleware.getCb()
+    );
+
+    return middleware.getPromise()
+    .then(() => {
+      resHelpers.getCurrentRes().bar();
+      assert(false);
+    })
+    .catch((err) => assert(true));
+  });
 });

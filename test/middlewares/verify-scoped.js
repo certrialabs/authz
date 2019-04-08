@@ -172,6 +172,25 @@ describe('Verify Scoped', function() {
       resHelpers.getCurrentRes().foo();
       assert(false);
     })
-    .catch((err) => assert(true));;
+    .catch((err) => assert(true));
+  });
+  it('should not be able to set both included and excluded', function() {
+    let options = {
+      included : ['foo'],
+      excluded : ['foo']
+    }
+    let middleware = middlewareHelpers.getMiddleware();
+    authz.middlewares.verifyScoped(options)(
+      null,
+      resHelpers.getCurrentRes(),
+      middleware.getCb()
+    );
+
+    return middleware.getPromise()
+    .then(() => {
+      resHelpers.getCurrentRes().foo();
+      assert(false);
+    })
+    .catch((err) => assert(true));
   });
 });
