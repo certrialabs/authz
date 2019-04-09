@@ -134,9 +134,8 @@ describe('Verify Authorized', function() {
     return middleware.getPromise()
     .then(() => {
       resHelpers.getCurrentRes().bar();
-      assert(false);
     })
-    .catch((err) => assert(true));
+    .catch((err) => assert(err.message === 'Please call policy authorized before modifying the result'));
   });
   it('should not allow included method call without authorization', function() {
     let options = {
@@ -152,11 +151,10 @@ describe('Verify Authorized', function() {
     return middleware.getPromise()
     .then(() => {
       resHelpers.getCurrentRes().foo();
-      assert(false);
     })
-    .catch((err) => assert(true));
+    .catch((err) => assert(err.message === 'Please call policy authorized before modifying the result'));
   });
-  it('should allow only included method call with authorization', function() {
+  it('should allow included method call with authorization', function() {
     let options = {
       included : ['foo']
     }
@@ -173,12 +171,12 @@ describe('Verify Authorized', function() {
     })
     .then(() => {
       resHelpers.getCurrentRes().foo();
-      assert(false);
+      assert(true);
     })
-    .catch((err) => assert(true));
+    .catch((err) => assert(false));
   });
 
-  it('should allow only included method call without authorization', function() {
+  it('should allow only not included method call without authorization', function() {
     let options = {
       included : ['foo']
     }
@@ -213,6 +211,6 @@ describe('Verify Authorized', function() {
       resHelpers.getCurrentRes().bar();
       assert(false);
     })
-    .catch((err) => assert(true));
+    .catch((err) => assert(err.message === "Cloudn't set both included and excluded"));
   });
 });
