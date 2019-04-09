@@ -7,6 +7,15 @@ const AUTHORIZE_OPTION_TYPE = 'authorize'
 
 let options = {}
 
+let includes = (arr, key) => {
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] === key) {
+      return true
+    }
+  }
+  return false
+}
+
 let initContext = (res) => {
   res['authz'] = res['authz'] || {}
 }
@@ -81,11 +90,11 @@ let doCheckActionRequired = (options, key) => {
     return true
   }
 
-  if (included && included.includes(key)) {
+  if (included && includes(included, key)) {
     return true
   }
 
-  if (excluded && !excluded.includes(key)) {
+  if (excluded && !includes(excluded, key)) {
     return true
   }
 

@@ -119,6 +119,7 @@ describe('Verify Scoped', function() {
       assert(false);
     })
     .catch((err) => {
+      console.log(err);
       assert(err.message === 'Please call policy scope before modifying the result');
     });
   });
