@@ -4,6 +4,7 @@ let currentRes;
 let getEmptyResObject = () => {
   return new class {
     foo() {}
+    bar() {}
   };
 };
 

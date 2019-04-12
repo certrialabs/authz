@@ -2,6 +2,20 @@
 
 require('harmony-reflect')
 
+const SCOPE_OPTION_TYPE = 'scope'
+const AUTHORIZE_OPTION_TYPE = 'authorize'
+
+let options = {}
+
+let includes = (arr, key) => {
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] === key) {
+      return true
+    }
+  }
+  return false
+}
+
 let initContext = (res) => {
   res['authz'] = res['authz'] || {}
 }
@@ -68,22 +82,57 @@ let grantFullAccess = (res) => {
   return new Promise((resolve) => resolve(true))
 }
 
-let initProxy = (res) => {
+let doCheckActionRequired = (options, key) => {
+  let included = options && options.included ? options.included : null
+  let excluded = options && options.excluded ? options.excluded : null
+
+  if (!included && !excluded) {
+    return true
+  }
+
+  if (included && includes(included, key)) {
+    return true
+  }
+
+  if (excluded && !includes(excluded, key)) {
+    return true
+  }
+
+  return false
+}
+
+let doCheckScoped = (res, options, key) => {
+  if (res['authz']['scopeVerificationRequired'] && doCheckActionRequired(options, key)) {
+    if (!res['authz']['scoped'] === true && !res['authz']['skipScoping'] === true) {
+      throw new Error('Please call policy scope before modifying the result')
+    }
+  }
+}
+
+let doCheckAuthorized = (res, options, key) => {
+  if (res['authz']['authzVerificationRequired'] && doCheckActionRequired(options, key)) {
+    if (!res['authz']['authorized'] && !res['authz']['skipAuthorization'] === true) {
+      throw new Error('Please call policy authorized before modifying the result')
+    }
+  }
+}
+
+let initProxy = (res, o, type) => {
+  if (o) {
+    let included = o && o.included ? o.included : null
+    let excluded = o && o.excluded ? o.excluded : null
+
+    if (included && excluded) {
+      throw new Error("Cloudn't set both included and excluded")
+    }
+    options[type] = o
+  }
   if (!res['authz']['proxied']) {
     res['authz']['proxied'] = true
     Object.setPrototypeOf(res, new Proxy(Object.getPrototypeOf(res), {
       get: (target, key) => {
-        if (res['authz']['scopeVerificationRequired']) {
-          if (!res['authz']['scoped'] === true && !res['authz']['skipScoping'] === true) {
-            throw new Error('Please call policy scope before modifying the result')
-          }
-        }
-        if (res['authz']['authzVerificationRequired']) {
-          if (!res['authz']['authorized'] && !res['authz']['skipAuthorization'] === true) {
-            throw new Error('Please call policy authorized before modifying the result')
-          }
-        }
-
+        doCheckScoped(res, options[SCOPE_OPTION_TYPE], key)
+        doCheckAuthorized(res, options[AUTHORIZE_OPTION_TYPE], key)
         return target[key]
       }
     }))
@@ -92,28 +141,36 @@ let initProxy = (res) => {
 
 module.exports = {
   middlewares: {
-    verifyScoped: () => {
+    verifyScoped: (options) => {
       return (req, res, next) => {
-        initContext(res)
-        initProxy(res)
+        try {
+          initContext(res)
+          initProxy(res, options, SCOPE_OPTION_TYPE)
 
-        res['authz']['scoped'] = false
-        res['authz']['skipScoping'] = false
-        res['authz']['scopeVerificationRequired'] = true
+          res['authz']['scoped'] = false
+          res['authz']['skipScoping'] = false
+          res['authz']['scopeVerificationRequired'] = true
 
-        next()
+          next()
+        } catch (err) {
+          next(err)
+        }
       }
     },
-    verifyAuthorized: () => {
+    verifyAuthorized: (options) => {
       return (req, res, next) => {
-        initContext(res)
-        initProxy(res)
+        try {
+          initContext(res)
+          initProxy(res, options, AUTHORIZE_OPTION_TYPE)
 
-        res['authz']['authorized'] = false
-        res['authz']['skipAuthorization'] = false
-        res['authz']['authzVerificationRequired'] = true
+          res['authz']['authorized'] = false
+          res['authz']['skipAuthorization'] = false
+          res['authz']['authzVerificationRequired'] = true
 
-        next()
+          next()
+        } catch (err) {
+          next(err)
+        }
       }
     },
     skipAuthorization: () => {

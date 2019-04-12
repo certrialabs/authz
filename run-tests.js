@@ -4,7 +4,7 @@ let process = require('process');
 let child_process = require('child_process');
 let options = ['mocha', '--check-leaks'];
 
-if (process.version.match(/^v4|5/)) {
+if (process.version.match(/^v4|v5/)) {
   options.push('--harmony_proxies');
 } else {
 }

@@ -3,8 +3,13 @@
 class Middleware {
     constructor() {
       let resolveFunction;
-      this.promise = new Promise(resolve => resolveFunction = resolve);
+      let rejectFunction;
+      this.promise = new Promise((resolve, reject) => {
+        resolveFunction = resolve;
+        rejectFunction = reject;
+      });
       this.resolveFunction = resolveFunction;
+      this.rejectFunction = rejectFunction;
     }
 
     getPromise() {
@@ -12,7 +17,13 @@ class Middleware {
     }
 
     getCb() {
-      return this.resolveFunction;
+      return (err) => {
+        if (err) {
+          return this.rejectFunction(err);
+        } else {
+          this.resolveFunction(err);
+        }
+      }
     }
 }
 
