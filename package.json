@@ -1,6 +1,6 @@
 {
   "name": "authz",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A simple authorization framework for nodejs inspired by ruby pundit gem.",
   "main": "index.js",
   "scripts": {
