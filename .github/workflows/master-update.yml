@@ -27,7 +27,7 @@ jobs:
         run: npm run ci:version-bump
 
       - name: Install Dependencies
-        run: npm run install
+        run: npm install
 
       - name: Test
         run: npm run test
