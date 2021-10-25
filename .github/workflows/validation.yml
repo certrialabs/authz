@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v1
 
       - name: Install Dependencies
-        run: npm run ci:install
+        run: npm install
       
       - name: Lint
         run: npm run lint
