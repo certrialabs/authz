@@ -2,7 +2,7 @@
 
 require('harmony-reflect')
 
-const SCOPE_OPTION_TYPE = 'scope'
+const SCOPE_OPTION_TYPE = 'scope';
 const AUTHORIZE_OPTION_TYPE = 'authorize'
 
 let options = {}

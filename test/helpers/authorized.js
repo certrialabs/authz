@@ -18,7 +18,7 @@ describe('Authorized', function() {
   it('should not touch policy in case of fullAccess', function() {
     return authz.helpers.grantFullAccess(resHelpers.getCurrentRes())
     .then(() => authz.helpers.authorized(resHelpers.getCurrentRes()))
-    .then(() => assert(false));
+    .then(() => assert(true));
   });
 
   it('should resolve with model', function() {
