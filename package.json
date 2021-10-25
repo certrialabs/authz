@@ -1,16 +1,19 @@
 {
-  "name": "authz",
-  "version": "0.1.0",
+  "name": "@certrialabs/authz",
+  "version": "1.0.0",
   "description": "A simple authorization framework for nodejs inspired by ruby pundit gem.",
   "main": "index.js",
   "scripts": {
     "test": "standard index.js && node run-tests.js",
-    "lint": "standard index.js || exit 0",
-    "fix-lint": "standard --fix index.js"
+    "lint": "standard index.js",
+    "fix-lint": "standard --fix index.js",
+    "ci:version-bump": "npm --no-git-tag-version version patch",
+    "ci:prepare-package": "rm -rf dist && mkdir dist && cp index.js dist && cp package.json dist && cp LICENSE dist",
+    "ci:publish": "npm publish"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/elsix/authz.git"
+    "url": "git+https://github.com/certrialabs/authz.git"
   },
   "keywords": [
     "node",
@@ -20,9 +23,9 @@
   "author": "Kiril Kalchev",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/elsix/authz/issues"
+    "url": "https://github.com/certrialabs/authz/issues"
   },
-  "homepage": "https://github.com/elsix/authz#readme",
+  "homepage": "https://github.com/certrialabs/authz#readme",
   "dependencies": {
     "harmony-reflect": "^1.6.2"
   },

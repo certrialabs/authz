@@ -1,0 +1,65 @@
+name: Authz Master Update CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+
+  build-test-and-publish:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.17.0]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v1
+        with:
+          registry-url: 'https://npm.pkg.github.com'
+          # Defaults to the user or organization that owns the workflow file
+          scope: '@certrialabs'
+
+      - name: Bump version
+        run: npm run ci:version-bump
+
+      - name: Install Dependencies
+        run: npm run install
+
+      - name: Test
+        run: npm run test
+
+      - name: Prepare package
+        run: npm run ci:prepare-package
+
+      - name: Publish
+        run: npm run ci:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  bump-version:
+    needs: build-test-and-publish
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [14.17.0]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v1
+
+      - name: Bump version
+        run: npm run ci:version-bump
+
+      - uses: stefanzweifel/git-auto-commit-action@v4.12.0
+        with:
+          commit_message: Bump package version
+          file_pattern: package.json
+          commit_author: github-certrialabs <github-certrialabs@users.noreply.github.com>
