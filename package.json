@@ -1,6 +1,6 @@
 {
   "name": "@certrialabs/authz",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A simple authorization framework for nodejs inspired by ruby pundit gem.",
   "main": "index.js",
   "scripts": {
